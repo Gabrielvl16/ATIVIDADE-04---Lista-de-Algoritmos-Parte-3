@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO 3 // Tamanho do tabuleiro do jogo da velha
+
+// Função para inicializar o tabuleiro
+void inicializarTabuleiro(char tabuleiro[TAMANHO][TAMANHO]) {
+    for (int i = 0; i < TAMANHO; i++) {
+        for (int j = 0; j < TAMANHO; j++) {
+            tabuleiro[i][j] = ' ';
+        }
+    }
+}
+
+// Função para exibir o tabuleiro
+void exibirTabuleiro(char tabuleiro[TAMANHO][TAMANHO]) {
+    system("clear"); // Use "cls" no Windows
+    printf("\n");
+    for (int i = 0; i < TAMANHO; i++) {
+        for (int j = 0; j < TAMANHO; j++) {
+            printf(" %c ", tabuleiro[i][j]);
+            if (j < TAMANHO - 1) printf("|");
+        }
+        printf("\n");
+        if (i < TAMANHO - 1) printf("---+---+---\n");
+    }
+    printf("\n");
+}
+
+// Função para verificar se há um vencedor
+char verificarVencedor(char tabuleiro[TAMANHO][TAMANHO]) {
+    // Verificar linhas e colunas
+    for (int i = 0; i < TAMANHO; i++) {
+        if (tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[i][2] && tabuleiro[i][0] != ' ')
+            return tabuleiro[i][0];
+        if (tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[1][i] == tabuleiro[2][i] && tabuleiro[0][i] != ' ')
+            return tabuleiro[0][i];
+    }
+
+    // Verificar diagonais
+    if (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2] && tabuleiro[0][0] != ' ')
+        return tabuleiro[0][0];
+    if (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0] && tabuleiro[0][2] != ' ')
+        return tabuleiro[0][2];
+
+    return ' '; // Sem vencedor ainda
+}
+
+// Função para verificar se o tabuleiro está cheio
+int tabuleiroCheio(char tabuleiro[TAMANHO][TAMANHO]) {
+    for (int i = 0; i < TAMANHO; i++) {
+        for (int j = 0; j < TAMANHO; j++) {
+            if (tabuleiro[i][j] == ' ') return 0;
+        }
+    }
+    return 1; // Tabuleiro está cheio
+}
+
+// Função principal do jogo
+void jogoDaVelha() {
+    char tabuleiro[TAMANHO][TAMANHO];
+    char jogadorAtual = 'X';
+    int linha, coluna;
+    char vencedor = ' ';
+
+    inicializarTabuleiro(tabuleiro);
+
+    // Loop do jogo
+    while (1) {
+        exibirTabuleiro(tabuleiro);
+
+        // Solicitar a jogada do jogador atual
+        printf("Jogador %c, digite sua jogada (linha e coluna): ", jogadorAtual);
+        scanf("%d %d", &linha, &coluna);
+
+        // Verificar se a jogada é válida
+        if (linha < 1 || linha > 3 || coluna < 1 || coluna > 3 || tabuleiro[linha-1][coluna-1] != ' ') {
+            printf("Jogada inválida! Tente novamente.\n");
+            continue;
+        }
+
+        // Registrar a jogada
+        tabuleiro[linha-1][coluna-1] = jogadorAtual;
+
+        // Verificar se há um vencedor
+        vencedor = verificarVencedor(tabuleiro);
+        if (vencedor != ' ') {
+            exibirTabuleiro(tabuleiro);
+            printf("Parabéns! Jogador %c venceu!\n", vencedor);
+            break;
+        }
+
+        // Verificar se o tabuleiro está cheio (empate)
+        if (tabuleiroCheio(tabuleiro)) {
+            exibirTabuleiro(tabuleiro);
+            printf("Empate! O tabuleiro está cheio.\n");
+            break;
+        }
+
+        // Alternar o jogador
+        jogadorAtual = (jogadorAtual == 'X') ? 'O' : 'X';
+    }
+}
+
+int main() {
+    jogoDaVelha();
+    return 0;
+}
