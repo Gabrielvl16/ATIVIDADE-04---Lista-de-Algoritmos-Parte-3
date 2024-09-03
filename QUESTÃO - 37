@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TAMANHO_MAXIMO 100 // Tamanho máximo da fila
+
+typedef struct {
+    int itens[TAMANHO_MAXIMO];
+    int frente; // Índice do primeiro elemento da fila
+    int tras;   // Índice de um local após o último elemento
+} Fila;
+
+// Função para inicializar a fila
+void inicializarFila(Fila *f) {
+    f->frente = -1;
+    f->tras = -1;
+}
+
+// Função para verificar se a fila está cheia
+int estaCheia(Fila *f) {
+    return f->tras == TAMANHO_MAXIMO - 1;
+}
+
+// Função para verificar se a fila está vazia
+int estaVazia(Fila *f) {
+    return f->frente == -1 || f->frente > f->tras;
+}
+
+// Função para enfileirar (adicionar) um elemento na fila
+void enfileirar(Fila *f, int valor) {
+    if (estaCheia(f)) {
+        printf("Fila cheia! Não é possível enfileirar o elemento.\n");
+        return;
+    }
+    if (f->frente == -1) {
+        f->frente = 0;
+    }
+    f->tras++;
+    f->itens[f->tras] = valor;
+    printf("Enfileirado: %d\n", valor);
+}
+
+// Função para desenfileirar (remover) um elemento da fila
+int desenfileirar(Fila *f) {
+    if (estaVazia(f)) {
+        printf("Fila vazia! Não é possível desenfileirar o elemento.\n");
+        return -1;
+    }
+    int elemento = f->itens[f->frente];
+    f->frente++;
+    return elemento;
+}
+
+// Função para exibir os elementos da fila
+void exibirFila(Fila *f) {
+    if (estaVazia(f)) {
+        printf("Fila vazia!\n");
+        return;
+    }
+    printf("Elementos na fila: ");
+    for (int i = f->frente; i <= f->tras; i++) {
+        printf("%d ", f->itens[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    Fila fila;
+    inicializarFila(&fila);
+
+    enfileirar(&fila, 10);
+    enfileirar(&fila, 20);
+    enfileirar(&fila, 30);
+
+    exibirFila(&fila);
+
+    printf("Desenfileirado: %d\n", desenfileirar(&fila));
+    printf("Desenfileirado: %d\n", desenfileirar(&fila));
+
+    exibirFila(&fila);
+
+    enfileirar(&fila, 40);
+    exibirFila(&fila);
+
+    return 0;
+}
