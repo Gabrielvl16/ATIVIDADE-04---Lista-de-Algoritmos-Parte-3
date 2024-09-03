@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100 // Define o tamanho máximo da pilha
+
+// Estrutura da pilha
+typedef struct {
+    int topo;
+    int itens[MAX];
+} Pilha;
+
+// Função para inicializar a pilha
+void inicializarPilha(Pilha *p) {
+    p->topo = -1; // A pilha está inicialmente vazia
+}
+
+// Função para verificar se a pilha está vazia
+int estaVazia(Pilha *p) {
+    return p->topo == -1;
+}
+
+// Função para verificar se a pilha está cheia
+int estaCheia(Pilha *p) {
+    return p->topo == MAX - 1;
+}
+
+// Função para adicionar um elemento à pilha
+void empilhar(Pilha *p, int valor) {
+    if (estaCheia(p)) {
+        printf("Erro: A pilha está cheia.\n");
+    } else {
+        p->itens[++(p->topo)] = valor; // Incrementa o topo e adiciona o valor
+        printf("Empilhado: %d\n", valor);
+    }
+}
+
+// Função para remover um elemento da pilha
+int desempilhar(Pilha *p) {
+    if (estaVazia(p)) {
+        printf("Erro: A pilha está vazia.\n");
+        return -1; // Valor de erro
+    } else {
+        return p->itens[(p->topo)--]; // Retorna o valor do topo e decrementa o topo
+    }
+}
+
+// Função para visualizar o elemento do topo da pilha sem remover
+int topo(Pilha *p) {
+    if (estaVazia(p)) {
+        printf("Erro: A pilha está vazia.\n");
+        return -1; // Valor de erro
+    } else {
+        return p->itens[p->topo];
+    }
+}
+
+int main() {
+    Pilha p;
+    inicializarPilha(&p);
+
+    empilhar(&p, 10); // Empilha o valor 10
+    empilhar(&p, 20); // Empilha o valor 20
+    empilhar(&p, 30); // Empilha o valor 30
+
+    printf("Elemento no topo: %d\n", topo(&p)); // Visualiza o elemento do topo
+
+    printf("Desempilhado: %d\n", desempilhar(&p)); // Desempilha o valor do topo
+    printf("Desempilhado: %d\n", desempilhar(&p)); // Desempilha o próximo valor
+
+    if (estaVazia(&p)) {
+        printf("A pilha está vazia.\n");
+    } else {
+        printf("A pilha não está vazia.\n");
+    }
+
+    return 0;
+}
