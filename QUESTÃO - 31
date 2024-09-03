@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Função para trocar dois elementos
+void trocar(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Função para realizar o Bubble Sort
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) { // Passa por todos os elementos do array
+        for (int j = 0; j < n - i - 1; j++) { // Últimos i elementos já estão ordenados
+            if (arr[j] > arr[j + 1]) { // Se o elemento atual é maior que o próximo, troca
+                trocar(&arr[j], &arr[j + 1]);
+            }
+        }
+    }
+}
+
+// Função para imprimir o array
+void imprimirArray(int arr[], int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90}; // Exemplo de array
+    int n = sizeof(arr) / sizeof(arr[0]); // Tamanho do array
+
+    printf("Array antes da ordenação: \n");
+    imprimirArray(arr, n); // Imprime o array original
+
+    bubbleSort(arr, n); // Chama a função de ordenação
+
+    printf("Array após a ordenação: \n");
+    imprimirArray(arr, n); // Imprime o array ordenado
+
+    return 0;
+}
