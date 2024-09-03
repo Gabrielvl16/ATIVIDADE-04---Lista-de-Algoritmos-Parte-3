@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define TAMANHO_MAXIMO 100 // Tamanho máximo da pilha
+
+// Definição da estrutura da pilha
+typedef struct {
+    char itens[TAMANHO_MAXIMO];
+    int topo;
+} Pilha;
+
+// Função para inicializar a pilha
+void inicializarPilha(Pilha* p) {
+    p->topo = -1;
+}
+
+// Função para verificar se a pilha está vazia
+int estaVazia(Pilha* p) {
+    return p->topo == -1;
+}
+
+// Função para verificar se a pilha está cheia
+int estaCheia(Pilha* p) {
+    return p->topo == TAMANHO_MAXIMO - 1;
+}
+
+// Função para empilhar um elemento
+void empilhar(Pilha* p, char c) {
+    if (estaCheia(p)) {
+        printf("Erro: pilha cheia\n");
+        exit(EXIT_FAILURE);
+    }
+    p->itens[++(p->topo)] = c;
+}
+
+// Função para desempilhar um elemento
+char desempilhar(Pilha* p) {
+    if (estaVazia(p)) {
+        printf("Erro: pilha vazia\n");
+        exit(EXIT_FAILURE);
+    }
+    return p->itens[(p->topo)--];
+}
+
+// Função para obter o elemento no topo da pilha
+char topo(Pilha* p) {
+    return p->itens[p->topo];
+}
+
+// Função para verificar a precedência dos operadores
+int precedencia(char c) {
+    switch (c) {
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+        case '^':
+            return 3;
+        default:
+            return -1;
+    }
+}
+
+// Função para converter expressão infixa para pós-fixa
+void infixaParaPosfixa(char* expressao) {
+    Pilha p;
+    inicializarPilha(&p);
+    int i, k;
+
+    // Loop para percorrer cada caractere da expressão
+    for (i = 0, k = -1; expressao[i]; i++) {
+        // Se o caractere for um operando (letra ou número)
+        if (isalnum(expressao[i])) {
+            expressao[++k] = expressao[i];
+        }
+        // Se o caractere for '('
+        else if (expressao[i] == '(') {
+            empilhar(&p, expressao[i]);
+        }
+        // Se o caractere for ')'
+        else if (expressao[i] == ')') {
+            while (!estaVazia(&p) && topo(&p) != '(') {
+                expressao[++k] = desempilhar(&p);
+            }
+            desempilhar(&p); // Remove o '(' da pilha
+        }
+        // Se o caractere for um operador
+        else {
+            while (!estaVazia(&p) && precedencia(topo(&p)) >= precedencia(expressao[i])) {
+                expressao[++k] = desempilhar(&p);
+            }
+            empilhar(&p, expressao[i]);
+        }
+    }
+
+    // Desempilha todos os operadores restantes na pilha
+    while (!estaVazia(&p)) {
+        expressao[++k] = desempilhar(&p);
+    }
+
+    expressao[++k] = '\0'; // Adiciona o terminador nulo ao final da expressão pós-fixa
+    printf("Expressão pós-fixa: %s\n", expressao);
+}
+
+int main() {
+    char expressao[TAMANHO_MAXIMO];
+    printf("Digite uma expressão infixa: ");
+    scanf("%s", expressao);
+
+    infixaParaPosfixa(expressao); // Converte a expressão infixa para pós-fixa
+
+    return 0;
+}
