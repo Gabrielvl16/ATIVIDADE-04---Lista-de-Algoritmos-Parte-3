@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_TEXTO 1000
+#define MAX_PADRAO 100
+
+// Função para procurar o padrão no texto
+void buscarPadrao(const char *texto, const char *padrao) {
+    int tamanhoTexto = strlen(texto);
+    int tamanhoPadrao = strlen(padrao);
+
+    printf("Ocorrências do padrão \"%s\" no texto:\n", padrao);
+
+    for (int i = 0; i <= tamanhoTexto - tamanhoPadrao; i++) {
+        int j;
+        for (j = 0; j < tamanhoPadrao; j++) {
+            if (texto[i + j] != padrao[j]) {
+                break;
+            }
+        }
+        if (j == tamanhoPadrao) {
+            printf("Padrão encontrado na posição %d\n", i);
+        }
+    }
+}
+
+int main() {
+    char texto[MAX_TEXTO];
+    char padrao[MAX_PADRAO];
+
+    // Entrada de dados
+    printf("Digite o texto (maximo %d caracteres):\n", MAX_TEXTO);
+    fgets(texto, sizeof(texto), stdin);
+
+    // Remove a nova linha do final do texto se presente
+    texto[strcspn(texto, "\n")] = 0;
+
+    printf("Digite o padrão a ser encontrado (maximo %d caracteres):\n", MAX_PADRAO);
+    fgets(padrao, sizeof(padrao), stdin);
+
+    // Remove a nova linha do final do padrão se presente
+    padrao[strcspn(padrao, "\n")] = 0;
+
+    // Verifica se o padrão não é vazio
+    if (strlen(padrao) == 0) {
+        printf("Padrão não pode ser vazio.\n");
+        return 1;
+    }
+
+    // Chama a função de busca de padrão
+    buscarPadrao(texto, padrao);
+
+    return 0;
+}
