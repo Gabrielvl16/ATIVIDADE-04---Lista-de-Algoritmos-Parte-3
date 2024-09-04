@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+#define TAMANHO_TABULEIRO 8
+
+// Função para verificar se a posição está dentro dos limites do tabuleiro
+int ehValido(int x, int y) {
+    return x >= 0 && x < TAMANHO_TABULEIRO && y >= 0 && y < TAMANHO_TABULEIRO;
+}
+
+// Função para exibir os movimentos possíveis do cavalo
+void movimentosCavalo(int x, int y) {
+    // Definindo os deslocamentos possíveis para o cavalo
+    int movimentos[8][2] = {
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+    };
+
+    printf("Movimentos possíveis do cavalo a partir da posição (%d, %d):\n", x, y);
+    for (int i = 0; i < 8; i++) {
+        int novoX = x + movimentos[i][0];
+        int novoY = y + movimentos[i][1];
+        if (ehValido(novoX, novoY)) {
+            printf("(%d, %d)\n", novoX, novoY);
+        }
+    }
+}
+
+int main() {
+    int x, y;
+
+    // Entrada das coordenadas iniciais do cavalo
+    printf("Digite a posição inicial do cavalo (x y): ");
+    scanf("%d %d", &x, &y);
+
+    // Verifica se a posição inicial está dentro dos limites do tabuleiro
+    if (ehValido(x, y)) {
+        movimentosCavalo(x, y);
+    } else {
+        printf("Posição inválida. As coordenadas devem estar entre 0 e 7.\n");
+    }
+
+    return 0;
+}
