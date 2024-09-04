@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define TAMANHO 9
+
+// Função para imprimir o tabuleiro do Sudoku
+void imprimirTabuleiro(int tabuleiro[TAMANHO][TAMANHO]) {
+    for (int i = 0; i < TAMANHO; i++) {
+        for (int j = 0; j < TAMANHO; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Função para verificar se um número pode ser colocado na posição (linha, coluna)
+bool ehValido(int tabuleiro[TAMANHO][TAMANHO], int linha, int coluna, int numero) {
+    // Verifica a linha
+    for (int i = 0; i < TAMANHO; i++) {
+        if (tabuleiro[linha][i] == numero) {
+            return false;
+        }
+    }
+
+    // Verifica a coluna
+    for (int i = 0; i < TAMANHO; i++) {
+        if (tabuleiro[i][coluna] == numero) {
+            return false;
+        }
+    }
+
+    // Verifica o subquadrante 3x3
+    int inicioLinha = linha - linha % 3;
+    int inicioColuna = coluna - coluna % 3;
+    for (int i = inicioLinha; i < inicioLinha + 3; i++) {
+        for (int j = inicioColuna; j < inicioColuna + 3; j++) {
+            if (tabuleiro[i][j] == numero) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// Função para resolver o Sudoku usando backtracking
+bool resolverSudoku(int tabuleiro[TAMANHO][TAMANHO]) {
+    int linha, coluna;
+    bool vazio = false;
+
+    // Encontrar uma célula vazia
+    for (linha = 0; linha < TAMANHO; linha++) {
+        for (coluna = 0; coluna < TAMANHO; coluna++) {
+            if (tabuleiro[linha][coluna] == 0) {
+                vazio = true;
+                break;
+            }
+        }
+        if (vazio) {
+            break;
+        }
+    }
+
+    // Se não houver célula vazia, o Sudoku está resolvido
+    if (!vazio) {
+        return true;
+    }
+
+    // Testar números de 1 a 9 na célula vazia
+    for (int numero = 1; numero <= 9; numero++) {
+        if (ehValido(tabuleiro, linha, coluna, numero)) {
+            tabuleiro[linha][coluna] = numero;
+
+            if (resolverSudoku(tabuleiro)) {
+                return true;
+            }
+
+            // Se não for possível resolver, desfazer a atribuição
+            tabuleiro[linha][coluna] = 0;
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    // Exemplo de um tabuleiro de Sudoku a ser resolvido
+    int tabuleiro[TAMANHO][TAMANHO] = {
+        {5, 3, 0, 0, 7, 0, 0, 0, 0},
+        {6, 0, 0, 1, 9, 5, 0, 0, 0},
+        {0, 9, 8, 0, 0, 0, 0, 6, 0},
+        {8, 0, 0, 0, 6, 0, 0, 0, 3},
+        {4, 0, 0, 8, 0, 3, 0, 0, 1},
+        {7, 0, 0, 0, 2, 0, 0, 0, 6},
+        {0, 6, 0, 0, 0, 0, 2, 8, 0},
+        {0, 0, 0, 4, 1, 9, 0, 0, 5},
+        {0, 0, 0, 0, 8, 0, 0, 7, 9}
+    };
+
+    printf("Tabuleiro inicial:\n");
+    imprimirTabuleiro(tabuleiro);
+
+    if (resolverSudoku(tabuleiro)) {
+        printf("\nTabuleiro resolvido:\n");
+        imprimirTabuleiro(tabuleiro);
+    } else {
+        printf("Não foi possível resolver o Sudoku.\n");
+    }
+
+    return 0;
+}v
