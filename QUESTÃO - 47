@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 100
+#define MAX_ARESTAS 1000
+
+// Estrutura para representar uma aresta
+typedef struct {
+    int origem, destino, peso;
+} Aresta;
+
+// Estrutura para o conjunto disjunto (Union-Find)
+typedef struct {
+    int pai;
+    int rank;
+} Conjunto;
+
+// Função para inicializar o conjunto disjunto
+void inicializarConjunto(Conjunto conjunto[], int n) {
+    for (int i = 0; i < n; i++) {
+        conjunto[i].pai = i;
+        conjunto[i].rank = 0;
+    }
+}
+
+// Função para encontrar o representante do conjunto (com path compression)
+int encontrar(Conjunto conjunto[], int i) {
+    if (conjunto[i].pai != i) {
+        conjunto[i].pai = encontrar(conjunto, conjunto[i].pai);
+    }
+    return conjunto[i].pai;
+}
+
+// Função para unir dois conjuntos (com union by rank)
+void unir(Conjunto conjunto[], int x, int y) {
+    int raizX = encontrar(conjunto, x);
+    int raizY = encontrar(conjunto, y);
+
+    if (raizX != raizY) {
+        if (conjunto[raizX].rank < conjunto[raizY].rank) {
+            conjunto[raizX].pai = raizY;
+        } else if (conjunto[raizX].rank > conjunto[raizY].rank) {
+            conjunto[raizY].pai = raizX;
+        } else {
+            conjunto[raizY].pai = raizX;
+            conjunto[raizX].rank++;
+        }
+    }
+}
+
+// Função para comparar duas arestas (para ordenação)
+int compararArestas(const void *a, const void *b) {
+    return ((Aresta *)a)->peso - ((Aresta *)b)->peso;
+}
+
+// Função para executar o algoritmo de Kruskal
+void kruskal(Aresta arestas[], int numArestas, int numVertices) {
+    Conjunto conjunto[numVertices];
+    inicializarConjunto(conjunto, numVertices);
+
+    // Ordena as arestas por peso
+    qsort(arestas, numArestas, sizeof(Aresta), compararArestas);
+
+    printf("Arestas na Árvore Geradora Mínima:\n");
+    int custoTotal = 0;
+
+    for (int i = 0; i < numArestas; i++) {
+        Aresta aresta = arestas[i];
+        int raizOrigem = encontrar(conjunto, aresta.origem);
+        int raizDestino = encontrar(conjunto, aresta.destino);
+
+        // Se as arestas não formarem um ciclo, adiciona ao MST
+        if (raizOrigem != raizDestino) {
+            printf("%d - %d: %d\n", aresta.origem, aresta.destino, aresta.peso);
+            custoTotal += aresta.peso;
+            unir(conjunto, raizOrigem, raizDestino);
+        }
+    }
+
+    printf("Custo total da Árvore Geradora Mínima: %d\n", custoTotal);
+}
+
+int main() {
+    int numVertices, numArestas;
+    Aresta arestas[MAX_ARESTAS];
+
+    printf("Digite o número de vértices e arestas: ");
+    scanf("%d %d", &numVertices, &numArestas);
+
+    printf("Digite as arestas (origem destino peso):\n");
+    for (int i = 0; i < numArestas; i++) {
+        scanf("%d %d %d", &arestas[i].origem, &arestas[i].destino, &arestas[i].peso);
+    }
+
+    kruskal(arestas, numArestas, numVertices);
+
+    return 0;
+}
