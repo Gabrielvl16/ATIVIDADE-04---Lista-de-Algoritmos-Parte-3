@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Função para encontrar a maior subsequência crescente
+void maiorSubsequenciaCrescente(int *vetor, int tamanho) {
+    if (tamanho == 0) {
+        printf("O vetor está vazio.\n");
+        return;
+    }
+
+    int *lis = (int *)malloc(tamanho * sizeof(int)); // Armazena o comprimento da maior subsequência crescente até cada índice
+    int *anterior = (int *)malloc(tamanho * sizeof(int)); // Armazena o índice do antecessor na maior subsequência crescente
+
+    for (int i = 0; i < tamanho; i++) {
+        lis[i] = 1; // Inicializa o comprimento da subsequência para cada elemento como 1
+        anterior[i] = -1; // Inicializa o índice do antecessor como -1
+    }
+
+    int maxLength = 1;
+    int maxIndex = 0;
+
+    // Preenche o array lis e anterior
+    for (int i = 1; i < tamanho; i++) {
+        for (int j = 0; j < i; j++) {
+            if (vetor[i] > vetor[j] && lis[i] < lis[j] + 1) {
+                lis[i] = lis[j] + 1;
+                anterior[i] = j;
+            }
+        }
+        if (lis[i] > maxLength) {
+            maxLength = lis[i];
+            maxIndex = i;
+        }
+    }
+
+    // Reconstrói e imprime a maior subsequência crescente
+    int *subsequencia = (int *)malloc(maxLength * sizeof(int));
+    int index = maxLength - 1;
+
+    for (int i = maxIndex; i >= 0; i = anterior[i]) {
+        subsequencia[index--] = vetor[i];
+        if (anterior[i] == -1) break;
+    }
+
+    printf("A maior subsequência crescente é: ");
+    for (int i = 0; i < maxLength; i++) {
+        printf("%d ", subsequencia[i]);
+    }
+    printf("\n");
+
+    free(lis);
+    free(anterior);
+    free(subsequencia);
+}
+
+int main() {
+    int tamanho;
+
+    printf("Digite o número de elementos no vetor: ");
+    scanf("%d", &tamanho);
+
+    int *vetor = (int *)malloc(tamanho * sizeof(int));
+
+    printf("Digite os elementos do vetor:\n");
+    for (int i = 0; i < tamanho; i++) {
+        scanf("%d", &vetor[i]);
+    }
+
+    maiorSubsequenciaCrescente(vetor, tamanho);
+
+    free(vetor);
+
+    return 0;
+}
