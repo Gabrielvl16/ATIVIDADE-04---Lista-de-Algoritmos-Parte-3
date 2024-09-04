@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+// Função para criptografar uma mensagem usando Cifra de César
+void cifraCesar(char *mensagem, int chave) {
+    for (int i = 0; mensagem[i] != '\0'; i++) {
+        char c = mensagem[i];
+
+        // Verifica se o caractere é uma letra maiúscula
+        if (isupper(c)) {
+            mensagem[i] = (c - 'A' + chave) % 26 + 'A';
+        }
+        // Verifica se o caractere é uma letra minúscula
+        else if (islower(c)) {
+            mensagem[i] = (c - 'a' + chave) % 26 + 'a';
+        }
+    }
+}
+
+// Função para descriptografar uma mensagem usando Cifra de César
+void decifraCesar(char *mensagem, int chave) {
+    cifraCesar(mensagem, 26 - (chave % 26));
+}
+
+int main() {
+    char mensagem[100];
+    int chave;
+
+    // Entrada da mensagem e chave
+    printf("Digite a mensagem (max 99 caracteres): ");
+    fgets(mensagem, sizeof(mensagem), stdin);
+    // Remove o newline do final da mensagem, se houver
+    mensagem[strcspn(mensagem, "\n")] = '\0';
+
+    printf("Digite a chave de criptografia: ");
+    scanf("%d", &chave);
+
+    // Criptografia
+    cifraCesar(mensagem, chave);
+    printf("Mensagem criptografada: %s\n", mensagem);
+
+    // Descriptografia
+    decifraCesar(mensagem, chave);
+    printf("Mensagem descriptografada: %s\n", mensagem);
+
+    return 0;
+}
