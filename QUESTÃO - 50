@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+
+// Função para comprimir uma string usando RLE
+void compressaoRLE(const char *entrada, char *saida) {
+    int n = strlen(entrada);
+    int i = 0;
+    int j = 0;
+
+    while (i < n) {
+        // Conta o número de repetições do caractere atual
+        int count = 1;
+        while (i + 1 < n && entrada[i] == entrada[i + 1]) {
+            i++;
+            count++;
+        }
+        // Adiciona o caractere e o número de repetições à saída
+        j += sprintf(saida + j, "%d%c", count, entrada[i]);
+        i++;
+    }
+    // Adiciona o caractere de término de string
+    saida[j] = '\0';
+}
+
+int main() {
+    char entrada[1000];
+    char saida[2000]; // O tamanho máximo da saída é estimado
+
+    // Entrada de dados
+    printf("Digite a string para compressão RLE:\n");
+    fgets(entrada, sizeof(entrada), stdin);
+    
+    // Remove a nova linha do final da entrada se presente
+    entrada[strcspn(entrada, "\n")] = 0;
+
+    // Chama a função de compressão
+    compressaoRLE(entrada, saida);
+
+    // Exibe o resultado
+    printf("String comprimida: %s\n", saida);
+
+    return 0;
+}
