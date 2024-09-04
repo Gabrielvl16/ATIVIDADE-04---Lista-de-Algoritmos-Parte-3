@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define VERTICES 5 // Número de vértices no grafo
+#define INF INT_MAX // Representa a infinidade (caminho inatingível)
+
+// Função para encontrar o vértice com a distância mínima que ainda não foi visitado
+int encontrarMenorDistancia(int distancias[], int visitado[]) {
+    int min = INF;
+    int min_index;
+
+    for (int i = 0; i < VERTICES; i++) {
+        if (!visitado[i] && distancias[i] <= min) {
+            min = distancias[i];
+            min_index = i;
+        }
+    }
+
+    return min_index;
+}
+
+// Função para implementar o Algoritmo de Dijkstra
+void dijkstra(int grafo[VERTICES][VERTICES], int origem) {
+    int distancias[VERTICES];
+    int visitado[VERTICES];
+
+    // Inicializa as distâncias e o vetor de visitados
+    for (int i = 0; i < VERTICES; i++) {
+        distancias[i] = INF;
+        visitado[i] = 0;
+    }
+    distancias[origem] = 0;
+
+    // Calcula o caminho mais curto para todos os vértices
+    for (int i = 0; i < VERTICES - 1; i++) {
+        int u = encontrarMenorDistancia(distancias, visitado);
+        visitado[u] = 1;
+
+        for (int v = 0; v < VERTICES; v++) {
+            if (!visitado[v] && grafo[u][v] && distancias[u] != INF && distancias[u] + grafo[u][v] < distancias[v]) {
+                distancias[v] = distancias[u] + grafo[u][v];
+            }
+        }
+    }
+
+    // Imprime o resultado
+    printf("Vértice \t Distância da origem\n");
+    for (int i = 0; i < VERTICES; i++) {
+        if (distancias[i] == INF) {
+            printf("%d \t\t %s\n", i, "INF");
+        } else {
+            printf("%d \t\t %d\n", i, distancias[i]);
+        }
+    }
+}
+
+int main() {
+    // Exemplo de grafo representado por uma matriz de adjacência
+    int grafo[VERTICES][VERTICES] = {
+        {0, 10, 0, 30, 100},
+        {10, 0, 50, 0, 0},
+        {0, 50, 0, 20, 10},
+        {30, 0, 20, 0, 60},
+        {100, 0, 10, 60, 0}
+    };
+
+    int origem;
+    printf("Digite o vértice de origem (0 a %d): ", VERTICES - 1);
+    scanf("%d", &origem);
+
+    if (origem >= 0 && origem < VERTICES) {
+        dijkstra(grafo, origem);
+    } else {
+        printf("Vértice de origem inválido.\n");
+    }
+
+    return 0;
+}
