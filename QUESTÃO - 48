@@ -1,0 +1,80 @@
+#include <stdio.h>
+
+#define MAX_ANDARES 10
+#define MAX_SOLICITACOES 50
+
+// Estrutura para armazenar as solicitações
+typedef struct {
+    int andarSolicitado;
+} Solicitação;
+
+// Função para exibir o estado do elevador
+void exibirEstado(int andarAtual, Solicitação solicitações[], int numSolicitações) {
+    printf("Elevador no andar: %d\n", andarAtual);
+    printf("Solicitações pendentes:\n");
+    for (int i = 0; i < numSolicitações; i++) {
+        printf("Andar %d\n", solicitações[i].andarSolicitado);
+    }
+    printf("\n");
+}
+
+// Função para processar as solicitações
+void processarSolicitações(int numAndares, Solicitação solicitações[], int numSolicitações) {
+    int andarAtual = 0; // Elevador começa no andar 0
+    int i = 0;
+
+    while (i < numSolicitações) {
+        int andarSolicitado = solicitações[i].andarSolicitado;
+
+        // Mover o elevador até o andar solicitado
+        while (andarAtual != andarSolicitado) {
+            if (andarAtual < andarSolicitado) {
+                andarAtual++;
+            } else {
+                andarAtual--;
+            }
+            exibirEstado(andarAtual, solicitações, numSolicitações);
+        }
+        // Chegou ao andar solicitado
+        printf("Chegou ao andar %d\n", andarAtual);
+        i++;
+    }
+}
+
+int main() {
+    int numAndares;
+    int numSolicitações;
+    Solicitação solicitações[MAX_SOLICITACOES];
+
+    // Entrada de dados
+    printf("Digite o número de andares no prédio: ");
+    scanf("%d", &numAndares);
+
+    if (numAndares <= 0 || numAndares > MAX_ANDARES) {
+        printf("Número de andares inválido.\n");
+        return 1;
+    }
+
+    printf("Digite o número de solicitações: ");
+    scanf("%d", &numSolicitações);
+
+    if (numSolicitações < 0 || numSolicitações > MAX_SOLICITACOES) {
+        printf("Número de solicitações inválido.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < numSolicitações; i++) {
+        printf("Digite o andar solicitado (0 a %d): ", numAndares - 1);
+        scanf("%d", &solicitações[i].andarSolicitado);
+
+        if (solicitações[i].andarSolicitado < 0 || solicitações[i].andarSolicitado >= numAndares) {
+            printf("Andar solicitado inválido.\n");
+            return 1;
+        }
+    }
+
+    // Processar as solicitações
+    processarSolicitações(numAndares, solicitações, numSolicitações);
+
+    return 0;
+}
